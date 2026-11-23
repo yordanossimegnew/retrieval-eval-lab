@@ -1,0 +1,43 @@
+# Run from this folder; the build context is the parent so document-qa-citations is available.
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: retrieval_lab
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab -d retrieval_lab"]
+      interval: 2s
+      retries: 20
+
+  api:
+    build:
+      context: ..
+      dockerfile: retrieval-eval-lab/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://lab:lab@postgres:5432/retrieval_lab
+      DOCQA_PATH: /document-qa-citations
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ui:
+    build:
+      context: ..
+      dockerfile: retrieval-eval-lab/Dockerfile
+    command: streamlit run ui/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    ports:
+      - "8501:8501"
+    environment:
+      AGENT_API_URL: http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

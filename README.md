@@ -1,6 +1,6 @@
 # Retrieval Evaluation Lab
 
-[![tests](https://github.com/yordanossimegnew/retrieval-eval-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/yordanossimegnew/retrieval-eval-lab/actions/workflows/tests.yml)
+[![tests](https://github.com/yordanossimegnew/retrieval-eval-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/yordanossimegnew/retrieval-eval-lab/actions/workflows/tests.yml) ![Python 3.12](https://img.shields.io/badge/python-3.12-blue) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 Measure and tune the retriever of
 [Document QA with Citations](https://github.com/yordanossimegnew/document-qa-citations) instead
@@ -25,6 +25,13 @@ on **PostgreSQL + pgvector**, with a **FastAPI** API and a **Streamlit** UI.
 | Leaderboard | nDCG and quality-vs-latency | Per-question drill-down |
 |---|---|---|
 | ![Leaderboard](docs/screenshots/leaderboard.png) | ![Charts](docs/screenshots/charts.png) | ![Drill-down](docs/screenshots/drill-down.png) |
+
+## Engineering highlights
+
+- Evaluates the *real* retriever of Document QA (its loader, chunker and store), not a re-implementation.
+- Each retrieval configuration is a parallel LangGraph `Send` branch. The configurations are vector, keyword or hybrid search, chunk size, reranking, and query rewriting (HyDE).
+- Standard IR metrics (Recall@k, Precision@k, MRR, nDCG@k) plus latency and cost, on synthetic questions or the public SciFact benchmark.
+- Per-question drill-down shows exactly which documents each configuration found or missed.
 
 ## Features
 

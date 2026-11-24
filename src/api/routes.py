@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import threading
-import uuid
-from pathlib import Path
 from typing import Any, Callable
 
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile

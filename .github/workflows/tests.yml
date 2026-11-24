@@ -39,6 +39,8 @@ jobs:
             PGPASSWORD=ci psql -h localhost -U ci -d ci -c "CREATE DATABASE $db"
           done
       - run: pip install -r requirements.txt -r document-qa-citations/requirements.txt
+      - name: Lint
+        run: pip install ruff && ruff check .
       - name: Run the test suite (fails if any test is skipped)
         run: |
           set -o pipefail

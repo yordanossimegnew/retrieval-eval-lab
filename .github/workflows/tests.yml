@@ -1,0 +1,46 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci -d ci"
+          --health-interval 2s --health-retries 30
+    env:
+      TEST_DATABASE_URL: postgresql://ci:ci@localhost:5432/retrieval_eval_test
+      DOCQA_PATH: document-qa-citations
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: yordanossimegnew/document-qa-citations
+          path: document-qa-citations
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Create test databases
+        run: |
+          for db in retrieval_eval_test; do
+            PGPASSWORD=ci psql -h localhost -U ci -d ci -c "CREATE DATABASE $db"
+          done
+      - run: pip install -r requirements.txt -r document-qa-citations/requirements.txt
+      - name: Run the test suite (fails if any test is skipped)
+        run: |
+          set -o pipefail
+          python -m pytest -q -rs -p no:cacheprovider | tee pytest.out
+          ! grep -qiE "[0-9]+ skipped" pytest.out

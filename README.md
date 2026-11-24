@@ -1,5 +1,7 @@
 # Retrieval Evaluation Lab
 
+[![tests](https://github.com/yordanossimegnew/retrieval-eval-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/yordanossimegnew/retrieval-eval-lab/actions/workflows/tests.yml)
+
 Measure and tune the retriever of
 [Document QA with Citations](https://github.com/yordanossimegnew/document-qa-citations) instead
 of guessing. Build a question set (synthetic from your own documents, or the public **SciFact**
